@@ -10,12 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+
+
+//Todo: Spara data (sharedpreferences)
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<ShoppingListItem> arrayList;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("SAVEDINSTANCE", "DATA LOADED");
             arrayList = savedInstanceState.getParcelableArrayList("Array");
         }else{
+            Log.d("ONSAVEDINSTANCESTATE", "NY ARRAY");
             arrayList = new ArrayList<>();
         }
         setContentView(R.layout.activity_main);
@@ -49,26 +54,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(!arrayList.isEmpty()){
+        Log.d("SAVED", "ONSAVEDINSTANCE");
             outState.putParcelableArrayList("Array", arrayList);
-        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recycleSetup();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("ONACTIVITYRESULT", "ONACTIVITYRESULT");
         String item = data.getStringExtra("Item");
         arrayList.add(new ShoppingListItem(item));
         recycleSetup();
-
-
-//        mRecyclerView.setAdapter(mAdapter);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mRecyclerView.getAdapter().notifyItemInserted(arrayList.size());
+        mRecyclerView.getAdapter().notifyItemInserted(arrayList.size());
 
     }
 
@@ -77,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ShoppingListAdapter(this, arrayList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.getAdapter().notifyItemInserted(arrayList.size());
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     @Override

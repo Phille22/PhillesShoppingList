@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class ShoppingListItem implements Parcelable {
     String item;
+    Boolean isChecked = false;
 
     public ShoppingListItem(String item){
         this.item = item;

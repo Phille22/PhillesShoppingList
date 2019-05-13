@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Philles Shopping List</string>
+    <string name="activity_add_item">Ny vara</string>
     <string name="action_settings">Settings</string>
 </resources>
