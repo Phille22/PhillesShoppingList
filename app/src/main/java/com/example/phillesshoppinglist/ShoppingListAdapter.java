@@ -3,7 +3,6 @@ package com.example.phillesshoppinglist;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ShoppingItemViewHolder> {
     private ArrayList<ShoppingListItem> arrayList;
     private LayoutInflater mInflater;
-    private MainActivity m;
 
     public ShoppingListAdapter(Context context, ArrayList shoppingItemList){
         mInflater = LayoutInflater.from(context);
@@ -38,10 +36,9 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         return arrayList.size();
     }
 
-    public void deleteItem(int position) {
-       arrayList.remove(position);
-       notifyItemRangeChanged(position, arrayList.size() - position);
-       Log.d("DELETEITEM", "" + position);
+    public void removeItem(int position){
+        arrayList.remove(position);
+        notifyDataSetChanged();
     }
 
     class ShoppingItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -68,5 +65,6 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
                 isChecked = false;
             }
         }
+
     }
 }

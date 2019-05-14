@@ -1,11 +1,10 @@
 package com.example.phillesshoppinglist;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +15,24 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 //Todo: Spara data (sharedpreferences)
@@ -36,10 +52,13 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Log.d("ONSAVEDINSTANCESTATE", "NY ARRAY");
             arrayList = new ArrayList<>();
+            loadData();
         }
         setContentView(R.layout.activity_main);
         mRecyclerView = findViewById(R.id.recyclerView);
         recycleSetup();
+        swipetoDelete();
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,18 +73,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d("SAVED", "ONSAVEDINSTANCE");
             outState.putParcelableArrayList("Array", arrayList);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        recycleSetup();
     }
 
     @Override
@@ -76,7 +88,54 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(new ShoppingListItem(item));
         recycleSetup();
         mRecyclerView.getAdapter().notifyItemInserted(arrayList.size());
+        saveData();
 
+    }
+
+    public void saveData(){
+        String filename = "SaveData.json";
+        FileOutputStream outputStream;
+        try{
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            Writer writer = new OutputStreamWriter(outputStream);
+            Gson gson = new Gson();
+            gson.toJson(arrayList, writer);
+            writer.close();
+            Log.d("Data sparat:", "" + arrayList);
+        }catch (Exception e){
+            Log.e("Can´t save data", "", e);
+        }
+    }
+
+    public void loadData(){
+        String filename = "SaveData.json";
+        FileInputStream inputStream;
+        try{
+            inputStream = openFileInput(filename);
+            Reader reader = new BufferedReader(new InputStreamReader(inputStream));
+            Gson gson = new Gson();
+            Type collectionType = new TypeToken<ArrayList<ShoppingListItem>>(){}.getType();
+            arrayList = gson.fromJson(reader, collectionType);
+            reader.close();
+            Log.d("Data laddat:", "" + arrayList);
+        }catch (Exception e){
+            Log.e("Can´t load data", "", e);
+        }
+    }
+
+
+
+    private void swipetoDelete(){
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(this) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+                mAdapter.removeItem(position);
+                saveData();
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     public void recycleSetup(){
@@ -84,9 +143,8 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ShoppingListAdapter(this, arrayList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
