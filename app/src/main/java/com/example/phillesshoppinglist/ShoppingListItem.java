@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class ShoppingListItem implements Parcelable {
     final String item;
 
-    public ShoppingListItem(String item){
+    ShoppingListItem(String item){
         this.item = item;
     }
 
