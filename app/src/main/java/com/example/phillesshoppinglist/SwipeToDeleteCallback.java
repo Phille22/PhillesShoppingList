@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 abstract class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
-    private SwipeToDeleteCallback callback;
+    private final SwipeToDeleteCallback callback = null;
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {

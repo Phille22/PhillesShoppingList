@@ -15,7 +15,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     private final ArrayList<ShoppingListItem> arrayList;
     private final LayoutInflater mInflater;
 
-    public ShoppingListAdapter(Context context, ArrayList<ShoppingListItem> shoppingItemList){
+    ShoppingListAdapter(Context context, ArrayList<ShoppingListItem> shoppingItemList){
         mInflater = LayoutInflater.from(context);
         this.arrayList = shoppingItemList;
     }
@@ -38,7 +38,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         return arrayList.size();
     }
 
-    public void removeItem(int position){
+    void removeItem(int position){
         arrayList.remove(position);
         notifyDataSetChanged();
     }
@@ -50,7 +50,6 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         private ShoppingItemViewHolder(View itemView) {
             super(itemView);
             shoppingItem = itemView.findViewById(R.id.textViewItem);
-
             itemView.setOnClickListener(this);
         }
 
@@ -64,6 +63,5 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
                 isChecked = false;
             }
         }
-
     }
 }
