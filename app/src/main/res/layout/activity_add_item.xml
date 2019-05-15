@@ -12,18 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="148dp"
         android:ems="10"
-        android:hint="Ny vara"
+        android:hint="@string/new_item"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/buttonAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="newItem"
-        android:text="Lägg till"
+        android:text="@string/new_item_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
