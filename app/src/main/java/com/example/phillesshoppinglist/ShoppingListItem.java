@@ -4,12 +4,27 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ShoppingListItem implements Parcelable {
-    String item;
-    Boolean isChecked = false;
+    final String item;
 
     public ShoppingListItem(String item){
         this.item = item;
     }
+
+    private ShoppingListItem(Parcel in) {
+        item = in.readString();
+    }
+
+    public static final Creator<ShoppingListItem> CREATOR = new Creator<ShoppingListItem>() {
+        @Override
+        public ShoppingListItem createFromParcel(Parcel in) {
+            return new ShoppingListItem(in);
+        }
+
+        @Override
+        public ShoppingListItem[] newArray(int size) {
+            return new ShoppingListItem[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -18,6 +33,6 @@ public class ShoppingListItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(item);
     }
 }

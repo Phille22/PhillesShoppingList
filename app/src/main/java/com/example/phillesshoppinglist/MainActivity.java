@@ -2,8 +2,8 @@ package com.example.phillesshoppinglist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,33 +14,26 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-
-//Todo: Spara data (sharedpreferences)
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<ShoppingListItem> arrayList;
     private RecyclerView mRecyclerView;
     private ShoppingListAdapter mAdapter;
+    private TextView nrOfItemsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         mRecyclerView = findViewById(R.id.recyclerView);
+        nrOfItemsTextView = findViewById(R.id.textViewNrOfItems);
+        nrOfItemsTextView.setText(getString(R.string.total_items, arrayList.size()));
         recycleSetup();
         swipetoDelete();
 
@@ -88,11 +83,12 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(new ShoppingListItem(item));
         recycleSetup();
         mRecyclerView.getAdapter().notifyItemInserted(arrayList.size());
+        nrOfItemsTextView.setText(getString(R.string.total_items, arrayList.size()));
         saveData();
 
     }
 
-    public void saveData(){
+    private void saveData(){
         String filename = "SaveData.json";
         FileOutputStream outputStream;
         try{
@@ -107,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void loadData(){
+    private void loadData(){
         String filename = "SaveData.json";
         FileInputStream inputStream;
         try{
@@ -126,11 +122,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void swipetoDelete(){
-        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(this) {
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback() {
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 mAdapter.removeItem(position);
+                nrOfItemsTextView.setText(getString(R.string.total_items, arrayList.size()));
                 saveData();
             }
         };
@@ -138,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
-    public void recycleSetup(){
+    private void recycleSetup(){
         mRecyclerView = findViewById(R.id.recyclerView);
         mAdapter = new ShoppingListAdapter(this, arrayList);
         mRecyclerView.setAdapter(mAdapter);
@@ -159,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        arrayList.removeAll(arrayList);
+        arrayList.clear();
+        nrOfItemsTextView.setText(getString(R.string.total_items, arrayList.size()));
         recycleSetup();
         mRecyclerView.getAdapter().notifyDataSetChanged();
         saveData();

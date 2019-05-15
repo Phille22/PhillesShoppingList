@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 public class AddItemActivity extends AppCompatActivity {
-    EditText item;
+    private EditText item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
