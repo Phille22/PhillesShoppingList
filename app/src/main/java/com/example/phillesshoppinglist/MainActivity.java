@@ -3,6 +3,7 @@ package com.example.phillesshoppinglist;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -116,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void swipetoDelete(){
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback() {
             @Override
@@ -138,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
