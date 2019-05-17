@@ -76,17 +76,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("ONACTIVITYRESULT", "ONACTIVITYRESULT");
-        String item = data.getStringExtra("Item");
-        arrayList.add(new ShoppingListItem(item));
-        recycleSetup();
-        mRecyclerView.getAdapter().notifyItemInserted(arrayList.size());
-        nrOfItemsTextView.setText(getString(R.string.total_items, arrayList.size()));
-        saveData();
+        if(resultCode == RESULT_OK ){
+            super.onActivityResult(requestCode, resultCode, data);
+            Log.d("ONACTIVITYRESULT", "ONACTIVITYRESULT");
+            String item = data.getStringExtra("Item");
+            arrayList.add(new ShoppingListItem(item, false));
+            recycleSetup();
+            mRecyclerView.getAdapter().notifyItemInserted(arrayList.size());
+            nrOfItemsTextView.setText(getString(R.string.total_items, arrayList.size()));
+            saveData();
+        }
     }
 
-    private void saveData(){
+    public void saveData(){
         String filename = "SaveData.json";
         FileOutputStream outputStream;
         try{
@@ -115,6 +117,12 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             Log.e("Can´t load data", "", e);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveData();
     }
 
     private void swipetoDelete(){

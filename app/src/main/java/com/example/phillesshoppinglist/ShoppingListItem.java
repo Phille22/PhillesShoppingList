@@ -5,9 +5,11 @@ import android.os.Parcelable;
 
 public class ShoppingListItem implements Parcelable {
     final String item;
+    public Boolean isChecked;
 
-    ShoppingListItem(String item){
+    ShoppingListItem(String item, Boolean isChecked){
         this.item = item;
+        this.isChecked = isChecked;
     }
 
     private ShoppingListItem(Parcel in) {

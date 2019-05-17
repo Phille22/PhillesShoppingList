@@ -30,7 +30,12 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     @Override
     public void onBindViewHolder(@NonNull ShoppingListAdapter.ShoppingItemViewHolder holder, int position) {
         String mCurrent = arrayList.get(position).item;
+        Boolean mIsChecked = arrayList.get(position).isChecked;
         holder.shoppingItem.setText(mCurrent);
+        if(mIsChecked){
+            holder.shoppingItem.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
     }
 
     @Override
@@ -55,11 +60,16 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         @Override
         public void onClick(View v) {
+            int mPosition = getLayoutPosition();
             if(!isChecked){
                 shoppingItem.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                arrayList.get(mPosition).isChecked = true;
+                notifyDataSetChanged();
                 isChecked = true;
             }else{
                 shoppingItem.setPaintFlags(0);
+                arrayList.get(mPosition).isChecked = false;
+                notifyDataSetChanged();
                 isChecked = false;
             }
         }
